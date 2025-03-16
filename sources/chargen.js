@@ -1096,7 +1096,6 @@ $(".exportSplitAnimations").click(async function() {
         );
       } else {
         const splitPath = splitFilePath(filePath);
-
         for (const [key, value] of Object.entries(base_animations)) {
           let animationToCheck = key;
           if (key === "combat_idle") {
@@ -1109,6 +1108,7 @@ $(".exportSplitAnimations").click(async function() {
           if (supportedAnimations.includes(animationToCheck)) {
             const newFile = `${splitPath.directory}/${key}/${splitPath.file}`;
             const img = loadImage(newFile, false);
+
             drawImage(ctx, img, value);
           } else {
             // Enable this to see missing animations in the console
@@ -1119,6 +1119,20 @@ $(".exportSplitAnimations").click(async function() {
       itemIdx += 1;
     }
     addCustomAnimationPreviews();
+    setTimeout(() => {
+      const getFrame = getSingleFrameFromCanvas("spritesheet", 0, 2);
+      if (getFrame) {
+        const dataUrl = getFrame.toDataURL("image/png");
+        const img = document.createElement("img");
+        img.src = dataUrl;
+        img.alt = "Rendered Spritesheet";
+        img.style.border = "2px solid white";
+        img.style.marginTop = "20px";
+        getFrame.replaceWith(img);
+        document.body.innerHTML = "";
+        document.body.appendChild(img);
+      }
+    }, 100);
   }
 
   function canRender() {
@@ -1134,6 +1148,30 @@ $(".exportSplitAnimations").click(async function() {
       return false;
     }
   }
+
+  function getSingleFrameFromCanvas(canvasId, frameX, frameY, frameSize = 64) {
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) {
+      console.error(`Canvas with ID "${canvasId}" not found`);
+      return null;
+    }
+  
+    const ctx = canvas.getContext("2d");
+    const croppedCanvas = document.createElement("canvas");
+    croppedCanvas.width = frameSize;
+    croppedCanvas.height = frameSize;
+    const croppedCtx = croppedCanvas.getContext("2d");
+  
+    try {
+      const imageData = ctx.getImageData(frameX * frameSize, frameY * frameSize, frameSize, frameSize);
+      croppedCtx.putImageData(imageData, 0, 0);
+      return croppedCanvas;
+    } catch (err) {
+      console.error("Error cropping frame:", err.message);
+      return null;
+    }
+  }
+  
 
   function showOrHideElements() {
     const bodyType = getBodyTypeName();
