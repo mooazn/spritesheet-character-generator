@@ -1123,14 +1123,16 @@ $(".exportSplitAnimations").click(async function() {
       const getFrame = getSingleFrameFromCanvas("spritesheet", 0, 2);
       if (getFrame) {
         const dataUrl = getFrame.toDataURL("image/png");
-        const img = document.createElement("img");
-        img.src = dataUrl;
-        img.alt = "Rendered Spritesheet";
-        img.style.border = "2px solid white";
-        img.style.marginTop = "20px";
-        getFrame.replaceWith(img);
-        document.body.innerHTML = "";
-        document.body.appendChild(img);
+        const encoded = encodeURIComponent(dataUrl);
+        window.location.href = `render.html?img=${encoded}`;
+        // const img = document.createElement("img");
+        // img.src = dataUrl;
+        // img.alt = "Rendered Spritesheet";
+        // img.style.border = "2px solid white";
+        // img.style.marginTop = "20px";
+        // getFrame.replaceWith(img);
+        // document.body.innerHTML = "";
+        // document.body.appendChild(img);
       }
     }, 100);
   }

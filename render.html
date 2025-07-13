@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Rendered Character</title>
+</head>
+<body>
+  <img id="renderedSprite" alt="Character" />
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const base64 = params.get('img');
+    if (base64) {
+      document.getElementById("renderedSprite").src = decodeURIComponent(base64);
+    }
+  </script>
+</body>
+</html>
